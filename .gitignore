@@ -1,0 +1,31 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+vendor/
+node_modules/
+
+# Runtime files
+storage/*.log
+storage/cache/
+
+# Local development files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# PHP and server artifacts
+*.log
+*.tmp
+.phpunit.result.cache
+
+# Database dumps and local database files
+*.sqlite
+*.sqlite3
+*.db
+*.dump
