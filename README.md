@@ -10,7 +10,7 @@ Configure Apache to use `public/` as the document root.
 ## Database Lab
 
 Run `database/resetdb.sql` to create and seed `ContactsAppDB`. The lab user is
-`ContactsAppUser`.
+`ContactsAppUser` with no password.
 
 ```sql
 USE ContactsAppDB;
