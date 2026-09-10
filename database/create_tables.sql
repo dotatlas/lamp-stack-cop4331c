@@ -42,14 +42,14 @@ CREATE TABLE IF NOT EXISTS `Contacts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 4. Create Application Database User & Grant Permissions
--- Mock account intentionally uses an empty password for the assignment.
+-- Mock account intentionally uses the simple password "pw" for the assignment.
 CREATE USER IF NOT EXISTS 'ContactsAppUser'@'localhost';
-ALTER USER 'ContactsAppUser'@'localhost' IDENTIFIED BY '';
+ALTER USER 'ContactsAppUser'@'localhost' IDENTIFIED BY 'pw';
 GRANT ALL PRIVILEGES ON `ContactsAppDB`.* TO 'ContactsAppUser'@'localhost';
 
 -- Also allow connection from any host (useful for Docker containerization)
 CREATE USER IF NOT EXISTS 'ContactsAppUser'@'%';
-ALTER USER 'ContactsAppUser'@'%' IDENTIFIED BY '';
+ALTER USER 'ContactsAppUser'@'%' IDENTIFIED BY 'pw';
 GRANT ALL PRIVILEGES ON `ContactsAppDB`.* TO 'ContactsAppUser'@'%';
 
 FLUSH PRIVILEGES;

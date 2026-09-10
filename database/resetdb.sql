@@ -60,13 +60,13 @@ INSERT INTO `Contacts` (`FirstName`, `LastName`, `Email`, `Phone`, `UserID`) VAL
 ('Casey', 'Patel', 'casey.patel@example.com', '407-555-0104', 2);
 
 -- Create Application Database User & Privileges
--- Mock account intentionally uses an empty password for the assignment.
+-- Mock account intentionally uses the simple password "pw" for the assignment.
 CREATE USER IF NOT EXISTS 'ContactsAppUser'@'localhost';
-ALTER USER 'ContactsAppUser'@'localhost' IDENTIFIED BY '';
+ALTER USER 'ContactsAppUser'@'localhost' IDENTIFIED BY 'pw';
 GRANT ALL PRIVILEGES ON `ContactsAppDB`.* TO 'ContactsAppUser'@'localhost';
 
 CREATE USER IF NOT EXISTS 'ContactsAppUser'@'%';
-ALTER USER 'ContactsAppUser'@'%' IDENTIFIED BY '';
+ALTER USER 'ContactsAppUser'@'%' IDENTIFIED BY 'pw';
 GRANT ALL PRIVILEGES ON `ContactsAppDB`.* TO 'ContactsAppUser'@'%';
 
 FLUSH PRIVILEGES;
