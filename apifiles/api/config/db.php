@@ -2,10 +2,10 @@
 
 function getDB()
 {
-    $envPath = dirname(__DIR__, 2) . '/.env';
+    $envPath = dirname(__DIR__, 3) . '/.env.example';
 
     if (!file_exists($envPath)) {
-        throw new Exception('.env file not found');
+        throw new Exception('.env.example file not found');
     }
 
     $env = parse_ini_file($envPath);
