@@ -2,7 +2,7 @@
 
 function getDB()
 {
-    $envPath = dirname(__DIR__, 3) . '/.env.example';
+    $envPath = dirname(__DIR__, 2) . '/.env.example';
 
     if (!file_exists($envPath)) {
         throw new Exception('.env.example file not found');
