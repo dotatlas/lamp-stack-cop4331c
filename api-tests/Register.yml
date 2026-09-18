@@ -1,0 +1,29 @@
+info:
+  name: Register
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{urlBase}}/apifiles/index.php?register"
+  params:
+    - name: register
+      value: ""
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "firstName": "Kamari",
+        "lastName": "Isaac",
+        "login" : "KamariI", 
+        "password" : "COP4331"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,5 @@
+name: prod
+variables:
+  - name: urlBase
+    value: https://lamp.cop4331clampproject.com
+    description: ""

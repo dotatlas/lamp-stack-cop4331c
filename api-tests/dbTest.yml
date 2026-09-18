@@ -1,0 +1,20 @@
+info:
+  name: dbTest
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{urlBase}}/apifiles/index.php?dbtest"
+  params:
+    - name: dbtest
+      value: ""
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
