@@ -1,0 +1,32 @@
+info:
+  name: Disable/Enable User
+  type: http
+  seq: 10
+
+http:
+  method: PUT
+  url: "{{urlBase}}/api/index.php?admin=status&id=4"
+  headers:
+    - name: X-User-Id
+      value: "5"
+  params:
+    - name: admin
+      value: status
+      type: query
+    - name: id
+      value: "4"
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "enabled": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

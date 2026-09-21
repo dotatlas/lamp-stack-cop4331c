@@ -1,0 +1,32 @@
+info:
+  name: Create New Admin (Admin)
+  type: http
+  seq: 12
+
+http:
+  method: POST
+  url: "{{urlBase}}/api/index.php?admin=create"
+  headers:
+    - name: X-User-Id
+      value: "5"
+  params:
+    - name: admin
+      value: create
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "firstName": "New",
+        "lastName": "Admin",
+        "login": "admin2",
+        "password": "adminpassword"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
