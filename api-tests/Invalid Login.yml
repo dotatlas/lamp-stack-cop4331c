@@ -1,0 +1,23 @@
+info:
+  name: Invalid Login
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{urlBase}}/apifiles/index.php"
+  body:
+    type: json
+    data: |-
+      {
+        "login": "KamariI",
+        "password": "COP4331!"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
