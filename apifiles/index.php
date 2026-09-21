@@ -5,6 +5,7 @@ require_once __DIR__ . '/config/db.php';
 
 setCorsHeaders();
 
+// Ping Query
 if (isset($_GET['ping'])) {
 
     jsonResponse([
@@ -13,6 +14,7 @@ if (isset($_GET['ping'])) {
     ]);
 }
 
+// DBtest Query
 if (isset($_GET['dbtest'])) {
     try {
         $pdo = getDB();
@@ -24,12 +26,17 @@ if (isset($_GET['dbtest'])) {
     } catch (Exception $e) {
         jsonResponse([
             "status" => "ERROR",
-            "message" => $e->getMessage()
+            "message" => "Database connection failed"
         ], 500);
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['register'])) {
+// Login Query
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    !isset($_GET['register']) &&
+    !isset($_GET['admin'])
+) {
 
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -46,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['register'])) {
         $pdo = getDB();
 
         $stmt = $pdo->prepare(
-            "SELECT ID, FirstName, LastName, Login, Password
+            "SELECT ID, FirstName, LastName, Login, Password, Role, Enabled
              FROM Users
              WHERE Login = ?"
         );
@@ -61,11 +68,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['register'])) {
             ], 401);
         }
 
+        if (!$user['Enabled']) {
+            jsonResponse([
+                "error" => "Account is disabled"
+            ], 403);
+        }
+
         jsonResponse([
             "id" => $user['ID'],
             "firstName" => $user['FirstName'],
             "lastName" => $user['LastName'],
             "login" => $user['Login'],
+            "role" => $user['Role'],
+            "enabled" => (bool)$user['Enabled'],
+            "token" => (string)$user['ID'],
             "error" => ""
         ], 200);
 
@@ -76,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['register'])) {
     }
 }
 
+// Registration Query
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['register'])) {
 
     $data = json_decode(file_get_contents('php://input'), true);
@@ -116,8 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['register'])) {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $pdo->prepare(
-            "INSERT INTO Users (FirstName, LastName, Login, Password)
-             VALUES (?, ?, ?, ?)"
+            "INSERT INTO Users (FirstName, LastName, Login, Password, Role, Enabled)
+             VALUES (?, ?, ?, ?, 'User', 1)"
         );
 
         $stmt->execute([
@@ -138,3 +155,279 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['register'])) {
         ], 500);
     }
 }
+
+// Admin Search/List Users
+if (
+    $_SERVER['REQUEST_METHOD'] === 'GET' &&
+    isset($_GET['admin']) &&
+    $_GET['admin'] === 'users'
+) {
+    $pdo = getDB();
+
+    // Only an authenticated Admin can continue
+    $admin = requireAdmin($pdo);
+
+    $search = trim($_GET['q'] ?? '');
+
+    if ($search === '') {
+
+        // No search term: return all users
+        $stmt = $pdo->prepare(
+            "SELECT ID, FirstName, LastName, Login, Role, Enabled,
+                    DateCreated, DateUpdated
+             FROM Users
+             ORDER BY LastName, FirstName"
+        );
+
+        $stmt->execute();
+
+    } else {
+
+        // Search users by first name, last name, or login
+        $searchTerm = '%' . $search . '%';
+
+        $stmt = $pdo->prepare(
+            "SELECT ID, FirstName, LastName, Login, Role, Enabled,
+                    DateCreated, DateUpdated
+             FROM Users
+             WHERE FirstName LIKE ?
+                OR LastName LIKE ?
+                OR Login LIKE ?
+             ORDER BY LastName, FirstName"
+        );
+
+        $stmt->execute([
+            $searchTerm,
+            $searchTerm,
+            $searchTerm
+        ]);
+    }
+
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    jsonResponse([
+        "users" => $users,
+        "error" => ""
+    ], 200);
+}
+
+// Admin Enable/Disable User
+if (
+    $_SERVER['REQUEST_METHOD'] === 'PUT' &&
+    isset($_GET['admin']) &&
+    $_GET['admin'] === 'status'
+) {
+    $pdo = getDB();
+
+    // Only an authenticated Admin can continue
+    $admin = requireAdmin($pdo);
+
+    $userID = (int)($_GET['id'] ?? 0);
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if ($userID <= 0 || !isset($data['enabled'])) {
+        jsonResponse([
+            "error" => "User ID and enabled status are required"
+        ], 400);
+    }
+
+    // Make sure enabled is actually true or false
+    $enabled = filter_var(
+        $data['enabled'],
+        FILTER_VALIDATE_BOOLEAN,
+        FILTER_NULL_ON_FAILURE
+    );
+
+    if ($enabled === null) {
+        jsonResponse([
+            "error" => "Enabled must be true or false"
+        ], 400);
+    }
+
+    // Check that the target user exists
+    $stmt = $pdo->prepare(
+        "SELECT ID, Login, Enabled
+         FROM Users
+         WHERE ID = ?"
+    );
+
+    $stmt->execute([$userID]);
+
+    $targetUser = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$targetUser) {
+        jsonResponse([
+            "error" => "User not found"
+        ], 404);
+    }
+
+    // Prevent an Admin from disabling their own account
+    if ($userID === (int)$admin['ID'] && !$enabled) {
+        jsonResponse([
+            "error" => "You cannot disable your own account"
+        ], 400);
+    }
+
+    $stmt = $pdo->prepare(
+        "UPDATE Users
+         SET Enabled = ?
+         WHERE ID = ?"
+    );
+
+    $stmt->execute([
+        $enabled ? 1 : 0,
+        $userID
+    ]);
+
+    jsonResponse([
+        "message" => $enabled
+            ? "User enabled successfully"
+            : "User disabled successfully",
+        "id" => $userID,
+        "enabled" => $enabled,
+        "error" => ""
+    ], 200);
+}
+
+// Change Password (Admin)
+if (
+    $_SERVER['REQUEST_METHOD'] === 'PUT' &&
+    isset($_GET['admin']) &&
+    $_GET['admin'] === 'password'
+) {
+    $pdo = getDB();
+
+    // Only an authenticated Admin can continue
+    $admin = requireAdmin($pdo);
+
+    $userID = (int)($_GET['id'] ?? 0);
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $newPassword = $data['password'] ?? '';
+
+    if ($userID <= 0 || $newPassword === '') {
+        jsonResponse([
+            "error" => "User ID and new password are required"
+        ], 400);
+    }
+
+    // Check whether the target user exists
+    $stmt = $pdo->prepare(
+        "SELECT ID, Login
+         FROM Users
+         WHERE ID = ?"
+    );
+
+    $stmt->execute([$userID]);
+
+    $targetUser = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$targetUser) {
+        jsonResponse([
+            "error" => "User not found"
+        ], 404);
+    }
+
+    // Hash the new password before storing it
+    $passwordHash = password_hash(
+        $newPassword,
+        PASSWORD_DEFAULT
+    );
+
+    $stmt = $pdo->prepare(
+        "UPDATE Users
+         SET Password = ?
+         WHERE ID = ?"
+    );
+
+    $stmt->execute([
+        $passwordHash,
+        $userID
+    ]);
+
+    jsonResponse([
+        "message" => "Password changed successfully",
+        "id" => $userID,
+        "error" => ""
+    ], 200);
+}
+
+// Create New Admin (Admin)
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_GET['admin']) &&
+    $_GET['admin'] === 'create'
+) {
+    $pdo = getDB();
+
+    // Only an authenticated Admin can continue
+    $admin = requireAdmin($pdo);
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $firstName = trim($data['firstName'] ?? '');
+    $lastName = trim($data['lastName'] ?? '');
+    $login = trim($data['login'] ?? '');
+    $password = $data['password'] ?? '';
+
+    if (
+        $firstName === '' ||
+        $lastName === '' ||
+        $login === '' ||
+        $password === ''
+    ) {
+        jsonResponse([
+            "error" => "All fields are required"
+        ], 400);
+    }
+
+    // Make sure the login is not already taken
+    $stmt = $pdo->prepare(
+        "SELECT ID
+         FROM Users
+         WHERE Login = ?"
+    );
+
+    $stmt->execute([$login]);
+
+    if ($stmt->fetch()) {
+        jsonResponse([
+            "error" => "Login already exists"
+        ], 409);
+    }
+
+    // Hash the password before storing it
+    $passwordHash = password_hash(
+        $password,
+        PASSWORD_DEFAULT
+    );
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO Users
+            (FirstName, LastName, Login, Password, Role, Enabled)
+         VALUES
+            (?, ?, ?, ?, 'Admin', 1)"
+    );
+
+    $stmt->execute([
+        $firstName,
+        $lastName,
+        $login,
+        $passwordHash
+    ]);
+
+    $newAdminID = $pdo->lastInsertId();
+
+    jsonResponse([
+        "message" => "Admin created successfully",
+        "id" => (int)$newAdminID,
+        "role" => "Admin",
+        "error" => ""
+    ], 201);
+}
+
+jsonResponse([
+    "error" => "Route not found"
+], 404);
