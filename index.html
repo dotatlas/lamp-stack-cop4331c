@@ -7,7 +7,7 @@
         <title>Contact Login Page</title>
 
         <!-- Scripts-->
-
+        <script type="text/javascript" src="code.js"></script>
     </head>
     
     <body>
@@ -21,16 +21,16 @@
 
             <!--Log in section-->
             <div>
-                <form>
+                <form id="loginForm" onsubmit="event.preventDefault(); doLogin();" class="needs-validation">
                         <!--UserName Section-->
                         <p>
                             <label for="username">Username:</label>
-                            <input type="text" name="username" id="logInUsername" required autocomplete="on" placeholder="Username">
+                            <input id ="logInUsername" type="text" name="username" id="logInUsername" required autocomplete="on" placeholder="Username">
                         </p>
                         <!--Password Section-->
                         <p>
                             <label for="password">Password:</label>
-                            <input type="text" name="password" id="logInPassword" required autocomplete="on" placeholder="Password">
+                            <input id = "logInPassword" type="text" name="password" id="logInPassword" required autocomplete="on" placeholder="Password">
                         </p>
                     <button type="submit">Submit</button>
                 </form>
@@ -46,7 +46,7 @@
 
         <footer>
             <!--Register Account link at sign up-->
-            <p>Don't have an Account? <b>Sign up</b></p>
+            <p>Don't have an Account? <b><a href="register.html">Sign up</a></b></p>
         </footer>
 
     </body>
