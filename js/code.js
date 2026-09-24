@@ -1,5 +1,5 @@
 const urlBase = (typeof window !== 'undefined' && window.location && (window.location.hostname === 'localhost' || window.location.hostname === '143.198.126.177' || window.location.origin.includes('cop4331c')))
-  ? '/api/index.php'
+  ? '/apifiles/index.php'
   : 'https://lamp.cop4331clampproject.com/api/index.php';
 
 const loginUrlBase = urlBase;
