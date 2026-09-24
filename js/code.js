@@ -119,7 +119,7 @@ function readCookie()
   //     userNameEl.innerHTML = `<i class="bi bi-person-circle me-1 text-primary"></i> <span>Logged in as <strong class="text-white">${firstName} ${lastName}</strong></span>`;
   //   }
     //Here do either search contacts or search people.
-  }
+  //}
 
 }
 
