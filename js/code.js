@@ -104,7 +104,7 @@ function readCookie()
       {
         lastName = decodeURIComponent(keyVal[1] || "");
       } 
-      else if (keyVal[0] === "userId") 
+      else if (keyVal[0] === "userID") 
       {
         userId = parseInt(keyVal[1].trim());
       }
