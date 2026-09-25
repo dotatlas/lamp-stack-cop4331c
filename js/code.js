@@ -130,7 +130,7 @@ function doLogout()
   lastName = "";
   document.cookie = "firstName=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
   document.cookie = "lastName=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-  document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+  document.cookie = "userID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
   window.location.href = "index.html";
 }
 
@@ -245,13 +245,18 @@ function searchContacts()
 }
 
 //Function used by register.html page to make user account or by admin.html to make new admin account
-function addAcount(redirect)
+function addAccount(redirect)
 {
   let firstNameInput = document.getElementById("firstNameInput");
   let lastNameInput = document.getElementById("lastNameInput");
   let loginInput = document.getElementById("loginInput");
   let passwordInput = document.getElementById("passwordInput")
   let accountResult = document.getElementById("accountFeedback")
+
+  let firstName = firstNameInput ? firstNameInput.value.trim() : "";
+  let lastName = lastNameInput ? lastNameInput.value.trim() : "";
+  let username = loginInput ? loginInput.value.trim() : "";
+  let password = passwordInput ? passwordInput.value : "";
 
   accountResult.innerHTML = "";
 
@@ -279,10 +284,10 @@ function addAcount(redirect)
     return;
   }
 
-  let jsonPayload = Json.stringify({
-    firstName: firstNameInput, 
-    lastName: lastNameInput,
-    login: loginInput,
+  let jsonPayload = JSON.stringify({
+    firstName: firstName, 
+    lastName: lastName,
+    login: username,
     password: passwordInput
   })
 
@@ -305,11 +310,11 @@ function addAcount(redirect)
         {
           if(redirect)
           {
-            window.location.href = index.html;
+            window.location.href = "index.html";
           }
           else
           {
-            accountResult.innerHTML = "Account sucesfully created";
+            accountResult.innerHTML = "Account successfully created";
             searchAccount();
           }
         }
