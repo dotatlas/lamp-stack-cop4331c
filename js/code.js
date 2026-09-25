@@ -235,7 +235,10 @@ function searchContacts()
   let resultSpan = document.getElementById("searchContactsResult");
   resultSpan.innerHTML = "";
 
-  let url = urlBase + (srch ? ("?q=" + encodeURIComponent(srch)) : "");
+  let url = urlBase + "?contacts=search";
+  if (srch) {
+    url += "&q=" + encodeURIComponent(srch);
+  }
 
   let xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
