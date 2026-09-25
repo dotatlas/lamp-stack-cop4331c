@@ -332,7 +332,7 @@ function addAccount(redirect)
     firstName: firstName, 
     lastName: lastName,
     login: username,
-    password: passwordInput
+    password: password
   })
 
 
