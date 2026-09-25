@@ -292,7 +292,7 @@ function addAccount(redirect)
   })
 
 
-  let url = urlBase;
+  let url = urlBase + encodeURIComponent('register');
 
   let xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
