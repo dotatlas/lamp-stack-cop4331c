@@ -34,8 +34,8 @@ if (isset($_GET['dbtest'])) {
 // Login Query
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
-    !isset($_GET['register']) &&
-    !isset($_GET['admin'])
+    isset($_GET['action']) &&
+    $_GET['action'] === 'login'
 ) {
 
     $data = json_decode(file_get_contents('php://input'), true);
@@ -426,6 +426,68 @@ if (
         "role" => "Admin",
         "error" => ""
     ], 201);
+}
+
+// Contact Search/List
+if (
+    $_SERVER['REQUEST_METHOD'] === 'GET' &&
+    isset($_GET['contacts']) &&
+    $_GET['contacts'] === 'search'
+) {
+    $pdo = getDB();
+
+    // Only an authenticated user can see their own contacts
+    $user = requireAuth($pdo);
+
+    $search = trim($_GET['q'] ?? '');
+
+    if ($search === '') {
+
+        // No search term: return all contacts for this user
+        $stmt = $pdo->prepare(
+            "SELECT ID, FirstName, LastName, Email, Phone,
+                    DateCreated, DateUpdated
+             FROM Contacts
+             WHERE UserID = ?
+             ORDER BY LastName, FirstName"
+        );
+
+        $stmt->execute([(int)$user['ID']]);
+
+    } else {
+
+        // Search this user's contacts by name, email, or phone
+        $searchTerm = '%' . $search . '%';
+
+        $stmt = $pdo->prepare(
+            "SELECT ID, FirstName, LastName, Email, Phone,
+                    DateCreated, DateUpdated
+             FROM Contacts
+             WHERE UserID = ?
+               AND (
+                    FirstName LIKE ?
+                    OR LastName LIKE ?
+                    OR Email LIKE ?
+                    OR Phone LIKE ?
+               )
+             ORDER BY LastName, FirstName"
+        );
+
+        $stmt->execute([
+            (int)$user['ID'],
+            $searchTerm,
+            $searchTerm,
+            $searchTerm,
+            $searchTerm
+        ]);
+    }
+
+    $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    jsonResponse([
+        "contacts" => $contacts,
+        "error" => ""
+    ], 200);
 }
 
 jsonResponse([

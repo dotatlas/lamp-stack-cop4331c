@@ -2,7 +2,7 @@ const urlBase = (typeof window !== 'undefined' && window.location && (window.loc
   ? '/apifiles/index.php'
   : 'https://lamp.cop4331clampproject.com/api/index.php';
 
-const loginUrlBase = urlBase;
+const loginUrlBase = urlBase + '?action=login';
 
 let userId = 0;
 let firstName = "";
@@ -235,7 +235,10 @@ function searchContacts()
   let resultSpan = document.getElementById("searchContactsResult");
   resultSpan.innerHTML = "";
 
-  let url = urlBase + (srch ? ("?q=" + encodeURIComponent(srch)) : "");
+  let url = urlBase + "?contacts=search";
+  if (srch) {
+    url += "&q=" + encodeURIComponent(srch);
+  }
 
   let xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
@@ -255,7 +258,7 @@ function searchContacts()
         }
 
         if (contacts.length === 0 || jsonObject.error === "No Records Found") {
-          if (targetP) targetP.innerHTML = `<div class="text-secondary-contrast small italic py-2"><i class="bi bi-info-circle me-1"></i> No matching colors found.</div>`;
+          if (targetP) targetP.innerHTML = `<div class="text-secondary-contrast small italic py-2"><i class="bi bi-info-circle me-1"></i> No matching contacts found.</div>`;
           return;
         }
 
@@ -329,7 +332,7 @@ function addAccount(redirect)
     firstName: firstName, 
     lastName: lastName,
     login: username,
-    password: passwordInput
+    password: password
   })
 
 
