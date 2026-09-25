@@ -258,7 +258,7 @@ function searchContacts()
         }
 
         if (contacts.length === 0 || jsonObject.error === "No Records Found") {
-          if (targetP) targetP.innerHTML = `<div class="text-secondary-contrast small italic py-2"><i class="bi bi-info-circle me-1"></i> No matching colors found.</div>`;
+          if (targetP) targetP.innerHTML = `<div class="text-secondary-contrast small italic py-2"><i class="bi bi-info-circle me-1"></i> No matching contacts found.</div>`;
           return;
         }
 
