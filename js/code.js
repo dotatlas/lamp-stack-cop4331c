@@ -242,6 +242,47 @@ function searchContacts()
   xhr.setRequestHeader("Authorization", "Bearer " + userId);
   xhr.setRequestHeader("X-User-Id", userId);
 
+  try {
+    xhr.onreadystatechange = function () {
+      if (this.readyState === 4 && this.status === 200) {
+        resultSpan.innerHTML = "<i class='bi bi-check-circle me-1'></i> Results updated";
+        let jsonObject = JSON.parse(xhr.responseText);
+        let targetP = document.getElementById("contactList");
+
+        let contacts = jsonObject.contacts || [];
+        if (contacts.length === 0 && Array.isArray(jsonObject.results) && jsonObject.results.length > 0) {
+          contacts = jsonObject.results.map(name => ({ id: null, name: name }));
+        }
+
+        if (contacts.length === 0 || jsonObject.error === "No Records Found") {
+          if (targetP) targetP.innerHTML = `<div class="text-secondary-contrast small italic py-2"><i class="bi bi-info-circle me-1"></i> No matching colors found.</div>`;
+          return;
+        }
+
+        let contactList = "";
+        for (let i = 0; i < contacts.length; i++) {
+          let c = contacts[i];
+          let contactName = typeof c === 'string' ? c : c.name;
+          let contactId = (typeof c === 'object' && c.id) ? c.id : null;
+
+          contactList += `<span class="badge rounded-pill bg-dark-subtle text-body border border-secondary px-3 py-2 fs-6 shadow-sm d-inline-flex align-items-center me-2 mb-2">
+            <span class="d-inline-block rounded-circle me-2 border" style="width: 14px; height: 14px; background-color: ${contactName};"></span>
+            <span class="me-2">${contactName}</span>
+            <button type="button" class="btn-close btn-close-white" style="font-size: 0.65rem;" onclick="deleteContact(${contactId ? contactId : `'${contactName.replace(/'/g, "\\'")}'`});" title="Delete Contact"></button>
+          </span>`;
+        }
+
+        if (targetP) {
+          targetP.innerHTML = contactList;
+        }
+      }
+    };
+    xhr.send();
+  } catch (err) {
+    resultSpan.innerHTML = err.message;
+  }
+
+
 }
 
 //Function used by register.html page to make user account or by admin.html to make new admin account
@@ -362,4 +403,3 @@ function updatePassword()
 {
 
 }
-
