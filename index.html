@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, intial-scale=1.0">
+        <title>Contact Login Page</title>
+
+        <!-- Scripts-->
+        <script type="text/javascript" src="js/code.js"></script>
+    </head>
+    
+    <body>
+        <header>
+            <h1 id="title"> Insert Title</h1>
+        </header>
+
+        
+        <main>
+            <h1>Log in Here</h1>
+
+            <!--Log in section-->
+            <div>
+                <form id="loginForm" onsubmit="event.preventDefault(); doLogin();" class="needs-validation">
+                        <!--UserName Section-->
+                        <p>
+                            <label for="username">Username:</label>
+                            <input id ="logInUsername" type="text" name="username" id="logInUsername" required autocomplete="on" placeholder="Username">
+                        </p>
+                        <!--Password Section-->
+                        <p>
+                            <label for="password">Password:</label>
+                            <input id = "logInPassword" type="password" name="password" required placeholder="Password">
+                        </p>
+                    <button type="submit">Submit</button>
+                </form>
+                <!--Log in section-->
+                <div>
+                    <span id="loginResult"></span>
+                </div>
+            </div>
+            <div>
+                <p>Can't log in?</p>
+            </div>
+        </main>
+
+        <footer>
+            <!--Register Account link at sign up-->
+            <p>Don't have an Account? <b><a href="register.html">Sign up</a></b></p>
+        </footer>
+
+    </body>
+
+</html>
