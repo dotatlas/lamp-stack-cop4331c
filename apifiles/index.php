@@ -34,8 +34,8 @@ if (isset($_GET['dbtest'])) {
 // Login Query
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
-    !isset($_GET['register']) &&
-    !isset($_GET['admin'])
+    isset($_GET['action']) &&
+    $_GET['action'] === 'login'
 ) {
 
     $data = json_decode(file_get_contents('php://input'), true);

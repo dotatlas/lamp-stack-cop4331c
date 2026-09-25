@@ -2,7 +2,7 @@ const urlBase = (typeof window !== 'undefined' && window.location && (window.loc
   ? '/apifiles/index.php'
   : 'https://lamp.cop4331clampproject.com/api/index.php';
 
-const loginUrlBase = urlBase;
+const loginUrlBase = urlBase + '?action=login';
 
 let userId = 0;
 let firstName = "";
