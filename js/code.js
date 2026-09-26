@@ -550,8 +550,8 @@ function toggleAccount(identifer, isEnabled)
 //Admin function to change another account's password
 function updatePassword(identifer)
 {
-  newPassword = document.getElementById(`newPasswordInput-${accountId}`);
-  passwordResult = document.getElementById(`passwordResult-${accountId}`);
+  newPassword = document.getElementById(`newPasswordInput-${identifer}`);
+  passwordResult = document.getElementById(`passwordResult-${identifer}`);
 
 
   if (!identifer && identifer !== 0) 
