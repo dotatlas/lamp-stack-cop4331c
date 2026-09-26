@@ -200,14 +200,15 @@ function searchAccount()
               <button type="button" 
               class="btn btn-sm btn-outline-secondary" 
                 style="font-size: 0.65rem;" 
+                id = "toggleStatusButton-${accountId}"
                 onclick="toggleAccount(${accountId ? accountId : `'${accountName.replace(/'/g, "\\'")}'`}, ${!p.Enabled});" 
                 title="${p.Enabled ? 'Disable Account' : 'Enable Account'}">
                 ${p.Enabled ? 'Disable' : 'Enable'}
               </button>
               <span id="statusResult-${accountId}"></span>
-              <form id="add-contact-form" onsubmit="event.preventDefault(); updatePassword(${accountId});">
+              <form id="add-contact-form-${accountId}" onsubmit="event.preventDefault(); updatePassword(${accountId});">
                 <div class="mb-3">
-                  <label for="newPassword" class="form-label">New Password</label>
+                  <label for="newPassword-${accountId}" class="form-label">New Password</label>
                   <input type="text" id="newPasswordInput-${accountId}" class="form-control" required>
                 </div>
 
@@ -297,8 +298,8 @@ function searchContacts()
           contactList += `<span class="badge rounded-pill bg-dark-subtle text-body border border-secondary px-3 py-2 fs-6 shadow-sm d-inline-flex align-items-center me-2 mb-2">
             <span class="d-inline-block rounded-circle me-2 border" style="width: 14px; height: 14px;"></span>
             <span class="me-2">${c.FirstName} ${c.LastName}</span>
-            <span>class="me-2">${c.Email}</span>
-            <span>class="me-2">${c.Phone}</span>
+            <spanclass="me-2">${c.Email}</span>
+            <spanclass="me-2">${c.Phone}</span>
             <button type="button" class="btn-close btn-close-white" style="font-size: 0.65rem;" onclick="deleteContact(${contactId ? contactId : `'${contactName.replace(/'/g, "\\'")}'`});" title="Delete Contact"></button>
           </span>`;
         }
@@ -509,7 +510,8 @@ function deleteContact(identifier)
 function toggleAccount(identifer, isEnabled)
 {
   let accountStatusResult = document.getElementById(`statusResult-${identifer}`);
-  
+  let button = document.getElementById(`toggleStatusButton-${identifer}`);
+
   if (!identifer && identifer !== 0) 
   {
     return;
@@ -536,6 +538,19 @@ function toggleAccount(identifer, isEnabled)
         {
           res = JSON.parse(xhr.responseText);
           accountStatusResult.innerHTML = res.message;
+          if (res.enabled) 
+          {
+            button.innerText = 'Disable';
+            button.title = 'Disable Account';
+            button.setAttribute('onclick', `toggleAccount(${identifer}, false)`);
+          } 
+          else 
+          {
+            button.innerText = 'Enable';
+            button.title = 'Enable Account';
+            button.setAttribute('onclick', `toggleAccount(${identifer}, true)`);
+          }
+
         }
         else
         {
