@@ -187,14 +187,14 @@ function searchAccount()
           //Make the contact list into a html string list
           if(contacts.length > 0)
           {
-            contactsMarkup = contacts.map(contact => `<div>• ${contact.name}</div>`).join('');
+            contactsMarkup = contacts.map(contact => `<div>• ${contact.FirstName} ${contact.LastName}</div>`).join('');
           }
           else{
             contactsMarkup = 'No contacts'
           }
 
           accountList += `
-          <div>
+          <div class="mb-4">
             <div>
               <span class="me-2">${accountName}</span>
               <button type="button" 
@@ -213,7 +213,6 @@ function searchAccount()
 
                 <button type="submit" class="btn btn-success w-100">Update Password</button>
                 <div id="passwordResult" class="mt-3 small"></div>
-
               </form>
             </div>
             <details class="small">
