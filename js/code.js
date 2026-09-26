@@ -433,7 +433,7 @@ function addContact()
     {
       if (this.readyState === 4)
       {
-        if(this.status === 200)
+        if(this.status === 200 || this.status === 201)
         {
           newContactFeedback = "New Contact Added";
           newContactFirstName.value = "";
