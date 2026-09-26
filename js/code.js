@@ -301,7 +301,11 @@ function searchContacts()
             <span class="text-muted small me-2">${c.Email}</span>
             <span class="text-muted small me-2">${c.Phone}</span>
             <button type="button-${contactId}" class="btn-close btn-close-white" style="font-size: 0.65rem;" onclick="deleteContact(${contactId ? contactId : `'${contactName.replace(/'/g, "\\'")}'`});" title="Delete Contact"></button>
-            <button type="button" id="editButton-${contactId}" class="btn btn-warning btn-sm p-0 rounded-0 d-flex align-items-center justify-content-center" style="font-size: 0.65rem;" onclick="editContact(${contactId });" title="Edit Contact"></button>
+            <button type="button" id="editButton-${contactId}" 
+            class="btn btn-warning btn-sm p-0 rounded-0 d-flex align-items-center justify-content-center" 
+            style="width: 20px; height: 20px;" onclick="toggleEditForm(${contactId });" title="Edit Contact">
+              <i class="bi bi-pencil-fill" style="font-size: 0.55rem;">Edit Contact</i>
+            </button>
           </span>
           <div id="editForm-${contactId}" class="card card-body mt-2 shadow-sm d-none" style="max-width: 320px;">
             <h6 class="card-title mb-2"> Edit Contact </h6>
