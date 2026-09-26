@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{urlBase}}/apifiles/index.php"
+  url: "{{urlBase}}/apifiles/index.php?action=login"
   body:
     type: json
     data: |-
