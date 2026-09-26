@@ -198,7 +198,7 @@ function searchAccount()
             <div>
               <span class="me-2">${accountName}</span>
               <button type="button" 
-              class="btn btn-sm btn-outline-light" 
+              class="btn btn-sm btn-outline-secondary" 
                 style="font-size: 0.65rem;" 
                 onclick="toggleAccount(${accountId ? accountId : `'${accountName.replace(/'/g, "\\'")}'`}, ${p.Enabled});" 
                 title="${p.Enabled ? 'Disable Account' : 'Enable Account'}">
@@ -398,6 +398,10 @@ function addAccount(redirect)
           else
           {
             accountResult.innerHTML = "Account successfully created";
+            firstNameInput.value = "";
+            lastNameInput.value = "";
+            loginInput.value = "";
+            passwordInput.value = "";
             searchAccount();
           }
         }
@@ -579,6 +583,7 @@ function updatePassword(identifer)
         if(this.status === 200)
         {
           passwordResult.innerHTML = "Password successfully updated.";
+          newPassword.value = "";
         }
         else{
           passwordResult.innerHTML = "Password not updated successfully.";
