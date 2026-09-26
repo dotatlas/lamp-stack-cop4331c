@@ -437,7 +437,7 @@ xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
           try
           {
             let res = JSON.parse(this.responseText);
-            newContactFeedback.innerHTML = res || "Failed to add contact"
+            newContactFeedback.innerHTML = res.error || "Failed to add contact"
           }
           catch(e)
           {
@@ -568,5 +568,5 @@ function updatePassword(identifer)
 
 function updateContact()
 {
-  
+
 }
