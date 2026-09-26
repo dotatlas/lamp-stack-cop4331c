@@ -406,10 +406,10 @@ function addContact()
   }
 
   let jsonPayload = JSON.stringify({
-    firstName: newContactFirstName,
-    lastName: newContactLastName,
-    phone: newContactPhone,
-    mail: newContactEmail
+    firstName: newContactFirstName.value.trim(),
+    lastName: newContactLastName.value.trim(),
+    phone: newContactPhone.value.trim(),
+    mail: newContactEmail.value.trim()
 });
 
 let url = urlBase + '?contacts=add';
@@ -529,7 +529,7 @@ function updatePassword(identifer)
   let url = urlBase + "?admin=password&id=" + encodeURIComponent(identifer);
 
   let jsonPayload = JSON.stringify({
-    password: newPassword
+    password: newPassword.value
   });
 
   let xhr = new XMLHttpRequest();
@@ -567,10 +567,5 @@ function updatePassword(identifer)
 
 function updateContact()
 {
-<<<<<<< HEAD
 
 }
-=======
-  
-}
->>>>>>> d2fdb1f9bddfde41f3c342da1fb3daee7fd09be8
