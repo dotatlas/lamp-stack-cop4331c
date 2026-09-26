@@ -194,7 +194,7 @@ function searchAccount()
           }
 
           accountList += `
-          <div class="mb-4">
+          <div class="mb-5">
             <div>
               <span class="me-2">${accountName}</span>
               <button type="button" 
@@ -208,11 +208,11 @@ function searchAccount()
               <form id="add-contact-form" onsubmit="event.preventDefault(); updatePassword(${accountId});">
                 <div class="mb-3">
                   <label for="newPassword" class="form-label">New Password</label>
-                  <input type="text" id="newPasswordInput" class="form-control" required>
+                  <input type="text" id="newPasswordInput-${accountId}" class="form-control" required>
                 </div>
 
                 <button type="submit" class="btn btn-success w-100">Update Password</button>
-                <div id="passwordResult" class="mt-3 small"></div>
+                <div id="passwordResult-${accountId}" class="mt-3 small"></div>
               </form>
             </div>
             <details class="small">
@@ -549,8 +549,8 @@ function toggleAccount(identifer, isEnabled)
 //Admin function to change another account's password
 function updatePassword(identifer)
 {
-  newPassword = document.getElementById("newPasswordInput");
-  passwordResult = document.getElementById("passwordResult");
+  newPassword = document.getElementById(`newPasswordInput-${accountId}`);
+  passwordResult = document.getElementById(`passwordResult-${accountId}`);
 
 
   if (!identifer && identifer !== 0) 
