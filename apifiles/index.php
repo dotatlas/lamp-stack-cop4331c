@@ -541,6 +541,49 @@ if (
     ], 201);
 }
 
+// Delete Contact
+if (
+    $_SERVER['REQUEST_METHOD'] === 'DELETE' &&
+    isset($_GET['contacts']) &&
+    $_GET['contacts'] === 'delete'
+) {
+    $pdo = getDB();
+
+    // A user can delete only their own contacts
+    $user = requireAuth($pdo);
+
+    $contactID = (int)($_GET['id'] ?? 0);
+
+    if ($contactID <= 0) {
+        jsonResponse([
+            "error" => "Contact ID is required"
+        ], 400);
+    }
+
+    $stmt = $pdo->prepare(
+        "DELETE FROM Contacts
+         WHERE ID = ?
+           AND UserID = ?"
+    );
+
+    $stmt->execute([
+        $contactID,
+        (int)$user['ID']
+    ]);
+
+    if ($stmt->rowCount() === 0) {
+        jsonResponse([
+            "error" => "Contact not found"
+        ], 404);
+    }
+
+    jsonResponse([
+        "message" => "Contact deleted successfully",
+        "id" => $contactID,
+        "error" => ""
+    ], 200);
+}
+
 jsonResponse([
     "error" => "Route not found"
 ], 404);
