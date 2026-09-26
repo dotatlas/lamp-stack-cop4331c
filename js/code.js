@@ -303,8 +303,9 @@ function searchContacts()
             <button type="button-${contactId}" class="btn-close btn-close-white" style="font-size: 0.65rem;" onclick="deleteContact(${contactId ? contactId : `'${contactName.replace(/'/g, "\\'")}'`});" title="Delete Contact"></button>
             <button type="button" id="editButton-${contactId}" 
             class="btn btn-link text-body p-0 ms-2 text-decoration-none d-inline-flex align-items-center" 
-            style="width: 20px; height: 20px;" onclick="toggleEditForm(${contactId });" title="Edit Contact">
-              <i class="bi bi-pencil-fill" style="font-size: 0.85rem;">Edit Contact</i>
+            onclick="toggleEditForm(${contactId });" title="Edit Contact">
+              <i class="bi bi-pencil-fill" style="font-size: 0.85rem;"></i>
+              <span style="font-size: 0.85rem;">Edit</span>
             </button>
           </span>
           <div id="editForm-${contactId}" class="card card-body mt-2 shadow-sm d-none" style="max-width: 320px;">
