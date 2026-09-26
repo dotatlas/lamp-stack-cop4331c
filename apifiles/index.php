@@ -205,6 +205,24 @@ if (
 
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Get all contacts belonging to each returned user
+    $contactStmt = $pdo->prepare(
+        "SELECT ID, FirstName, LastName, Email, Phone,
+                DateCreated, DateUpdated, UserID
+        FROM Contacts
+        WHERE UserID = ?
+        ORDER BY LastName, FirstName"
+    );
+
+    foreach ($users as &$user) {
+
+        $contactStmt->execute([$user['ID']]);
+
+        $user['Contacts'] = $contactStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    unset($user);
+
     jsonResponse([
         "users" => $users,
         "error" => ""
