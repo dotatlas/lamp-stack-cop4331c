@@ -164,7 +164,7 @@ function searchAccount()
     xhr.onreadystatechange = function () 
     {
       if (this.readyState === 4 && this.status === 200) 
-        {
+      {
         resultSpan.innerHTML = "<i class='bi bi-check-circle me-1'></i> Results updated";
         let jsonObject = JSON.parse(xhr.responseText);
         let targetP = document.getElementById("accountList") || document.getElementsByTagName("p")[0];
@@ -231,9 +231,18 @@ function searchAccount()
           targetP.innerHTML = accountList;
         }
       }
-      else{
-        let res = JSON.parse(xhr.responseText);
-        resultSpan.innerHTML = res.error;
+      else
+      {
+        try 
+        {
+          let res = JSON.parse(xhr.responseText);
+          resultSpan.innerHTML = res.error || 'Unknown error';
+        } 
+        catch (e) 
+        {
+          console.error('Invalid JSON response:', xhr.responseText);
+          resultSpan.innerHTML = 'Server returned an invalid response.';
+        }
       }
     };
     xhr.send();
