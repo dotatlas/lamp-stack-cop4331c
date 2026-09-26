@@ -205,6 +205,24 @@ if (
 
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Get all contacts belonging to each returned user
+    $contactStmt = $pdo->prepare(
+        "SELECT ID, FirstName, LastName, Email, Phone,
+                DateCreated, DateUpdated, UserID
+        FROM Contacts
+        WHERE UserID = ?
+        ORDER BY LastName, FirstName"
+    );
+
+    foreach ($users as &$user) {
+
+        $contactStmt->execute([$user['ID']]);
+
+        $user['Contacts'] = $contactStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    unset($user);
+
     jsonResponse([
         "users" => $users,
         "error" => ""
@@ -488,6 +506,57 @@ if (
         "contacts" => $contacts,
         "error" => ""
     ], 200);
+}
+
+// Add Contact
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_GET['contacts']) &&
+    $_GET['contacts'] === 'add'
+) {
+    $pdo = getDB();
+
+    // The new contact belongs to the signed-in user
+    $user = requireAuth($pdo);
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $firstName = trim($data['firstName'] ?? '');
+    $lastName = trim($data['lastName'] ?? '');
+    $email = trim($data['email'] ?? '');
+    $phone = trim($data['phone'] ?? '');
+
+    if (
+        $firstName === '' ||
+        $lastName === '' ||
+        $email === '' ||
+        $phone === ''
+    ) {
+        jsonResponse([
+            "error" => "All fields are required"
+        ], 400);
+    }
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO Contacts
+            (FirstName, LastName, Email, Phone, UserID)
+         VALUES
+            (?, ?, ?, ?, ?)"
+    );
+
+    $stmt->execute([
+        $firstName,
+        $lastName,
+        $email,
+        $phone,
+        (int)$user['ID']
+    ]);
+
+    jsonResponse([
+        "message" => "Contact added successfully",
+        "id" => (int)$pdo->lastInsertId(),
+        "error" => ""
+    ], 201);
 }
 
 jsonResponse([
