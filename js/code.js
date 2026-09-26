@@ -223,6 +223,7 @@ function searchAccount()
                 ${contactsMarkup}
               </div>
             </details>
+            <hr>
           </div>`;
         }
         if(targetP)
