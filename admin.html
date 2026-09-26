@@ -36,7 +36,7 @@
             <main>
                 <!--Search Account Card-->
                 <div class="row g-4">
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-md-6">
                         <div class="card shadow-sm p-4">
                             <h2 class="h5 mb-3"><i class="bi bi-search me-2"></i>Search Accounts</h2>
                             <div class="input-group mb-3">
@@ -52,37 +52,39 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- Add New admin account on right -->
-                <div class="col-lg-4">
-                    <div class="card shadow-sm p-4">
-                        <h2 class="h5 mb-3"><i class="bi bi-person-plus me-2"></i>Add New Admin Account</h2>
-                        <form id="add-contact-form" onsubmit="event.preventDefault(); addAccount(false);">
+                    <!-- Add New admin account on right -->
+                    <div class="col-md-6">
+                        <div class="card shadow-sm p-4">
+                            <h2 class="h5 mb-3"><i class="bi bi-person-plus me-2"></i>Add New Admin Account</h2>
+                            <form id="add-contact-form" onsubmit="event.preventDefault(); addAccount(false);">
+                                <div class="mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" id="firstNameInput" class="form-control" required>
+                            </div>
                             <div class="mb-3">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" id="firstNameInput" class="form-control" required>
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" id="lastNameInput" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="login" class="form-label">Login</label>
+                                <input type="text" id="loginInput" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" id="passwordInput" class="form-control" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success w-100">Add Contact</button>
+                            
+                            <!-- Feedback area for add success/errors -->
+                            <div id="accountFeedback" class="mt-3 small"></div>
+                            </form>
                         </div>
-                        <div class="mb-3">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" id="lastNameInput" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="login" class="form-label">Login</label>
-                            <input type="text" id="loginInput" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" id="passwordInput" class="form-control" required>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-success w-100">Add Contact</button>
-                        
-                        <!-- Feedback area for add success/errors -->
-                        <div id="accountFeedback" class="mt-3 small"></div>
-                        </form>
                     </div>
                 </div>
             </main>
+                </div>
+                
             <footer>
         
             </footer>
