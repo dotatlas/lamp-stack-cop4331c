@@ -269,7 +269,7 @@ function searchContacts()
         let contactList = "";
         for (let i = 0; i < contacts.length; i++) {
           let c = contacts[i];
-          let contactName = c.lastName;
+          let contactName = c.LastName;
           let contactId = c.id;
 
           contactList += `<span class="badge rounded-pill bg-dark-subtle text-body border border-secondary px-3 py-2 fs-6 shadow-sm d-inline-flex align-items-center me-2 mb-2">
