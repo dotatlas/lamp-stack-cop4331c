@@ -204,7 +204,7 @@ function searchAccount()
                 title="${p.Enabled ? 'Disable Account' : 'Enable Account'}">
                 ${p.Enabled ? 'Disable' : 'Enable'}
               </button>
-              <span id="statusResult"></span>
+              <span id="statusResult-${accountId}"></span>
               <form id="add-contact-form" onsubmit="event.preventDefault(); updatePassword(${accountId});">
                 <div class="mb-3">
                   <label for="newPassword" class="form-label">New Password</label>
@@ -508,8 +508,8 @@ function deleteContact(identifier)
 //Function used by admin to disable an account
 function toggleAccount(identifer, isEnabled)
 {
-  let accountStatusResult = document.getElementById("statusResult");
-
+  let accountStatusResult = document.getElementById("statusResult-${identifer}");
+  
   if (!identifer && identifer !== 0) 
   {
     return;
@@ -536,7 +536,6 @@ function toggleAccount(identifer, isEnabled)
         {
           res = JSON.parse(xhr.responseText);
           accountStatusResult.innerHTML = res.message;
-          isEnabled = res.enabled;
         }
         else
         {
