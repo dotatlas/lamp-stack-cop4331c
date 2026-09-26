@@ -202,6 +202,17 @@ function searchAccount()
                 title="${p.Enabled ? 'Disable Account' : 'Enable Account'}">
                 ${p.Enabled ? 'Disable' : 'Enable'}
               </button>
+
+              <form id="add-contact-form" onsubmit="event.preventDefault(); updatePassword(${accountId});">
+                <div class="mb-3">
+                  <label for="newPassword" class="form-label">New Password</label>
+                  <input type="text" id="newPasswordInput" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Update Password</button>
+                <div id="passwordResult" class="mt-3 small"></div>
+
+              </form>
             </div>
             <details class="small">
               <summary class="text-primary role-button" style="cursor: pointer; user-select: none;">
@@ -556,10 +567,10 @@ function updatePassword(identifer)
       {
         if(this.status === 200)
         {
-          passwordResult.innerHTML = "Password successfully";
+          passwordResult.innerHTML = "Password successfully updated.";
         }
         else{
-          passwordResult.innerHTML = "Login failed";
+          passwordResult.innerHTML = "Password not updated successfully.";
         }
       }
       else
