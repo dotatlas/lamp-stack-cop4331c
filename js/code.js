@@ -146,7 +146,7 @@ function searchAccount()
 {
   let srchInput = document.getElementById("searchPeople");
   let srch = srchInput ? srchInput.value.trim() : "";
-  let resultSpan = document.getElementById("searchPeopleResult");
+  let resultSpan = document.getElementById("searchAccountResult");
   resultSpan.innerHTML = "";
 
   let url = urlBase + (srch ? ("?q=" + encodeURIComponent(srch)) : "");
@@ -165,7 +165,6 @@ function searchAccount()
         resultSpan.innerHTML = "<i class='bi bi-check-circle me-1'></i> Results updated";
         let jsonObject = JSON.parse(xhr.responseText);
         let targetP = document.getElementById("accountList") || document.getElementsByTagName("p")[0];
-        
         let people = jsonObject.users || [];
 
         if (people.length === 0 || jsonObject.error === "No Records Found") {
