@@ -144,12 +144,13 @@ function doLogout()
 //Admin function that searches registered users (included other admin)
 function searchAccount()
 {
-  let srchInput = document.getElementById("searchAccount");
-  let srch = srchInput ? srchInput.value.trim() : "";
   let resultSpan = document.getElementById("searchAccountResult");
   resultSpan.innerHTML = "";
 
-  let url = urlBase + (srch ? ("?q=" + encodeURIComponent(srch)) : "");
+  let url = urlBase + "?admin=users"
+  if (srch) {
+    url += "&q=" + encodeURIComponent(srch);
+  }
 
   let xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
