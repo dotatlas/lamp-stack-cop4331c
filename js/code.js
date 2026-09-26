@@ -508,7 +508,7 @@ function deleteContact(identifier)
 //Function used by admin to disable an account
 function toggleAccount(identifer, isEnabled)
 {
-  let accountStatusResult = document.getElementById("statusResult-${identifer}");
+  let accountStatusResult = document.getElementById(`statusResult-${identifer}`);
   
   if (!identifer && identifer !== 0) 
   {
