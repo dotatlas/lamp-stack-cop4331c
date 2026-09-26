@@ -417,18 +417,15 @@ function addContact()
     firstName: newContactFirstName.value.trim(),
     lastName: newContactLastName.value.trim(),
     phone: newContactPhone.value.trim(),
-    mail: newContactEmail.value.trim()
-});
+    email: newContactEmail.value.trim()
+  });
 
-let url = urlBase + '?contacts=add';
-let xhr = new XMLHttpRequest();
-
-
-
-xhr.open("POST", url, true);
-xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-xhr.setRequestHeader("Authorization", "Bearer " + userId);
-xhr.setRequestHeader("X-User-Id", userId);
+  let url = urlBase + '?contacts=add';
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.setRequestHeader("Authorization", "Bearer " + userId);
+  xhr.setRequestHeader("X-User-Id", userId);
 
   try 
   {
