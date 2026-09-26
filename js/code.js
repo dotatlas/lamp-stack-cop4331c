@@ -145,7 +145,7 @@ function doLogout()
 function searchAccount()
 {
   let resultSpan = document.getElementById("searchAccountResult");
-  let srchInput = document.getElementById("searchContacts");
+  let srchInput = document.getElementById("searchAccount");
   let srch = srchInput ? srchInput.value.trim() : "";
   resultSpan.innerHTML = "";
 
