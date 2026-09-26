@@ -200,7 +200,7 @@ function searchAccount()
               <button type="button" 
               class="btn btn-sm btn-outline-secondary" 
                 style="font-size: 0.65rem;" 
-                onclick="toggleAccount(${accountId ? accountId : `'${accountName.replace(/'/g, "\\'")}'`}, ${p.Enabled});" 
+                onclick="toggleAccount(${accountId ? accountId : `'${accountName.replace(/'/g, "\\'")}'`}, ${!p.Enabled});" 
                 title="${p.Enabled ? 'Disable Account' : 'Enable Account'}">
                 ${p.Enabled ? 'Disable' : 'Enable'}
               </button>
