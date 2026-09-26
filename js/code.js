@@ -269,8 +269,8 @@ function searchContacts()
         let contactList = "";
         for (let i = 0; i < contacts.length; i++) {
           let c = contacts[i];
-          let contactName = typeof c === 'string' ? c : c.name;
-          let contactId = (typeof c === 'object' && c.id) ? c.id : null;
+          let contactName = c.lastName;
+          let contactId = c.id;
 
           contactList += `<span class="badge rounded-pill bg-dark-subtle text-body border border-secondary px-3 py-2 fs-6 shadow-sm d-inline-flex align-items-center me-2 mb-2">
             <span class="d-inline-block rounded-circle me-2 border" style="width: 14px; height: 14px; background-color: ${contactName};"></span>
