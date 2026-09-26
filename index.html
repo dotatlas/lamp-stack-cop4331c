@@ -17,44 +17,45 @@
     </head>
     
     <body>
-        <header>
-            <h1 id="title">Contacts App</h1>
-        </header>
+        <div class="container py-5">
+            <header>
+                <h1 id="title">Contacts App</h1>
+            </header>
 
-        
-        <main>
-            <h2>Log in Here</h2>
+            
+            <main>
+                <h3>Log in</h3>
 
-            <!--Log in section-->
-            <div>
-                <form id="loginForm" onsubmit="event.preventDefault(); doLogin();" class="needs-validation">
-                        <!--UserName Section-->
-                        <p>
-                            <label for="username">Username:</label>
-                            <input id ="logInUsername" type="text" name="username" id="logInUsername" required autocomplete="on" placeholder="Username">
-                        </p>
-                        <!--Password Section-->
-                        <p>
-                            <label for="password">Password:</label>
-                            <input id = "logInPassword" type="password" name="password" required placeholder="Password">
-                        </p>
-                    <button type="submit">Submit</button>
-                </form>
                 <!--Log in section-->
                 <div>
-                    <span id="loginResult"></span>
+                    <form id="loginForm" onsubmit="event.preventDefault(); doLogin();" class="needs-validation">
+                            <!--UserName Section-->
+                            <p>
+                                <label for="username">Username:</label>
+                                <input id ="logInUsername" type="text" name="username" id="logInUsername" required autocomplete="on" placeholder="Username">
+                            </p>
+                            <!--Password Section-->
+                            <p>
+                                <label for="password">Password:</label>
+                                <input id = "logInPassword" type="password" name="password" required placeholder="Password">
+                            </p>
+                        <button type="submit">Submit</button>
+                    </form>
+                    <!--Log in section-->
+                    <div>
+                        <span id="loginResult"></span>
+                    </div>
                 </div>
-            </div>
-            <div>
-                <p>Can't log in?</p>
-            </div>
-        </main>
+                <div>
+                    <p>Can't log in?</p>
+                </div>
+            </main>
 
-        <footer>
-            <!--Register Account link at sign up-->
-            <p>Don't have an Account? <b><a href="register.html">Sign up</a></b></p>
-        </footer>
-
+            <footer>
+                <!--Register Account link at sign up-->
+                <p>Don't have an Account? <b><a href="register.html">Sign up</a></b></p>
+            </footer>
+        </div>
     </body>
 
 </html>
