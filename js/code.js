@@ -61,7 +61,15 @@ function doLogin()
         }
         else
         {
-          document.getElementById("loginResult").innerHTML = "<i></i> Login failed";
+          try 
+          {
+            let res = JSON.parse(xhr.responseText);
+            document.getElementById("loginResult").innerHTML = res.error || "Login failed";
+          }
+          catch (e) 
+          {
+            document.getElementById("loginResult").innerHTML = "Login failed";
+          }
         }
       }
     };
@@ -414,8 +422,14 @@ function addContact()
 
 let url = urlBase + '?contacts=add';
 let xhr = new XMLHttpRequest();
+
+
+
 xhr.open("POST", url, true);
 xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+xhr.setRequestHeader("Authorization", "Bearer " + userId);
+xhr.setRequestHeader("X-User-Id", userId);
+
   try 
   {
     xhr.onreadystatechange = function()
