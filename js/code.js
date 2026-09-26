@@ -179,10 +179,10 @@ function searchAccount()
         for(let i =0; i <people.length; i++)
         {
           let p = people[i];
-          let contacts = p.contacts || [];
+          let contacts = p.Contacts || [];
           let accountName = p.Login
           let contactsMarkup = "";
-          let accountId = p.id
+          let accountId = p.ID
 
           //Make the contact list into a html string list
           if(contacts.length > 0)
