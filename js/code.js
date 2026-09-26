@@ -295,12 +295,35 @@ function searchContacts()
           let contactName = c.LastName;
           let contactId = c.id;
 
-          contactList += `<span class="badge rounded-pill bg-dark-subtle text-body border border-secondary px-3 py-2 fs-6 shadow-sm d-inline-flex align-items-center me-2 mb-2">
+          contactList += `
+          <span class="badge rounded-pill bg-dark-subtle text-body border border-secondary px-3 py-2 fs-6 shadow-sm d-inline-flex align-items-center me-2 mb-2">
             <span class="fw-bold me-2">${c.FirstName} ${c.LastName}</span>
             <span class="text-muted small me-2">${c.Email}</span>
             <span class="text-muted small me-2">${c.Phone}</span>
-            <button type="button" class="btn-close btn-close-white" style="font-size: 0.65rem;" onclick="deleteContact(${contactId ? contactId : `'${contactName.replace(/'/g, "\\'")}'`});" title="Delete Contact"></button>
-          </span>`;
+            <button type="button-${contactId}" class="btn-close btn-close-white" style="font-size: 0.65rem;" onclick="deleteContact(${contactId ? contactId : `'${contactName.replace(/'/g, "\\'")}'`});" title="Delete Contact"></button>
+            <button type="button" id="editButton-${contactId}" class="btn btn-warning btn-sm p-0 rounded-0 d-flex align-items-center justify-content-center" style="font-size: 0.65rem;" onclick="editContact(${contactId });" title="Edit Contact"></button>
+          </span>
+          <div id="editForm-${contactId}" class="card card-body mt-2 shadow-sm d-none" style="max-width: 320px;">
+            <h6 class="card-title mb-2"> Edit Contact </h6>
+            <div class ="mb-2">
+              <input type="text" id="editFirstName-${contactId}" class="form-control form-control-sm" placeholder="First Name" value="${c.FirstName}">
+            </div>
+            <div class ="mb-2">
+              <input type="text" id="editLastName-${contactId}" class="form-control form-control-sm" placeholder="Last Name" value="${c.LastName}">
+            </div>
+            <div class ="mb-2">
+              <input type="text" id="editEmail-${contactId}" class="form-control form-control-sm" placeholder="Email" value="${c.Email}">
+            </div>
+            <div class ="mb-2">
+              <input type="text" id="editPhone-${contactId}" class="form-control form-control-sm" placeholder="Phone Number" value="${c.Phone}">
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-sm btn-secondary" onclick="toggleEditForm(${contactId});">Cancel</button>
+              <button type="button" class="btn btn-sm btn-primary" onclick="editContact(${contactId});">Save</button>
+            </div>
+            <small id="editResult-${contactId}" class="text-muted mt-1"></small>
+          </div>
+          `;
         }
 
         if (targetP) {
@@ -430,11 +453,11 @@ function addAccount(redirect)
 //User function to add a new contact to their account
 function addContact()
 {
-  newContactFirstName = document.getElementById("firstName");
-  newContactLastName = document.getElementById("lastName");
-  newContactPhone = document.getElementById("phone");
-  newContactEmail = document.getElementById("email");
-  newContactFeedback = document.getElementById("contactAddResult");
+  let newContactFirstName = document.getElementById("firstName");
+  let newContactLastName = document.getElementById("lastName");
+  let newContactPhone = document.getElementById("phone");
+  let newContactEmail = document.getElementById("email");
+  let newContactFeedback = document.getElementById("contactAddResult");
 
   if(!newContactFirstName || !newContactLastName || !newContactPhone || !newContactEmail)
   {
@@ -500,23 +523,55 @@ function deleteContact(identifier)
     return;
   }
 
+  let deleteResult = document.getElementById("deleteContactResult");
+  let url = urlBase +"?contacts=delete&id=" + encodeURIComponent(identifier);
+  let xhr = new XMLHttpRequest();
+  
 
+  xhr.open("DELETE", url, true);
+  xhr.setRequestHeader("Authorization", "Bearer " + userId);
+  xhr.setRequestHeader("X-User-Id", userId);
 
+  try{
+    xhr.onreadystatechange = function ()
+    {
+      if(this.readyState === 4)
+      {
+        if(this.status === 200)
+        {
+          let res = JSON.parse(xhr.responseText);
+          deleteResult.innerHTML = res.message;
+          searchContacts();
+        }
+        else
+        {
+          let res = JSON.parse(xhr.responseText);
+          deleteResult.innerHTML = res.message;
+        }
+      }
+    };
+    xhr.send();
+  }
+  catch(err)
+  {
+    deleteResult.innerHTML = "error in deleting contact"
+    console.log(err);
+  }
 }
 
 
 //Function used by admin to disable an account
-function toggleAccount(identifer, isEnabled)
+function toggleAccount(identifier, isEnabled)
 {
-  let accountStatusResult = document.getElementById(`statusResult-${identifer}`);
-  let button = document.getElementById(`toggleStatusButton-${identifer}`);
+  let accountStatusResult = document.getElementById(`statusResult-${identifier}`);
+  let button = document.getElementById(`toggleStatusButton-${identifier}`);
 
-  if (!identifer && identifer !== 0) 
+  if (!identifier && identifier !== 0) 
   {
     return;
   }
 
-  let url = urlBase + "?admin=status&id=" + encodeURIComponent(identifer);
+  let url = urlBase + "?admin=status&id=" + encodeURIComponent(identifier);
 
   let jsonPayload = JSON.stringify({
     enabled: isEnabled
@@ -524,6 +579,7 @@ function toggleAccount(identifer, isEnabled)
 
   let xhr = new XMLHttpRequest();
   xhr.open("PUT", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   xhr.setRequestHeader("Authorization", "Bearer " + userId)
   xhr.setRequestHeader("X-User-Id", userId);
 
@@ -541,13 +597,13 @@ function toggleAccount(identifer, isEnabled)
           {
             button.innerText = 'Disable';
             button.title = 'Disable Account';
-            button.setAttribute('onclick', `toggleAccount(${identifer}, false)`);
+            button.setAttribute('onclick', `toggleAccount(${identifier}, false)`);
           } 
           else 
           {
             button.innerText = 'Enable';
             button.title = 'Enable Account';
-            button.setAttribute('onclick', `toggleAccount(${identifer}, true)`);
+            button.setAttribute('onclick', `toggleAccount(${identifier}, true)`);
           }
 
         }
@@ -567,18 +623,18 @@ function toggleAccount(identifer, isEnabled)
 }
 
 //Admin function to change another account's password
-function updatePassword(identifer)
+function updatePassword(identifier)
 {
-  newPassword = document.getElementById(`newPasswordInput-${identifer}`);
-  passwordResult = document.getElementById(`passwordResult-${identifer}`);
+  let newPassword = document.getElementById(`newPasswordInput-${identifier}`);
+  let passwordResult = document.getElementById(`passwordResult-${identifier}`);
 
 
-  if (!identifer && identifer !== 0) 
+  if (!identifier && identifier !== 0) 
   {
     return;
   }
 
-  let url = urlBase + "?admin=password&id=" + encodeURIComponent(identifer);
+  let url = urlBase + "?admin=password&id=" + encodeURIComponent(identifier);
 
   let jsonPayload = JSON.stringify({
     password: newPassword.value
@@ -586,6 +642,7 @@ function updatePassword(identifer)
 
   let xhr = new XMLHttpRequest();
   xhr.open("PUT", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
   xhr.setRequestHeader("Authorization", "Bearer " + userId)
   xhr.setRequestHeader("X-User-Id", userId);
 
@@ -604,10 +661,6 @@ function updatePassword(identifer)
           passwordResult.innerHTML = "Password not updated successfully.";
         }
       }
-      else
-      {
-        passwordResult.innerHTML = ""
-      }
     };
     xhr.send(jsonPayload);
   }
@@ -618,7 +671,67 @@ function updatePassword(identifer)
 
 }
 
-function updateContact()
-{
 
+function toggleEditForm(identifier)
+{
+  let form = document.getElementById(`editForm-${identifier}`);
+  if(form)
+  {
+    form.classList.toggle("d-none");
+  }
+}
+
+function editContact(identifier, contact)
+{
+  if (!identifier && identifier !== 0) 
+  {
+    return;
+  }
+
+  let newFirstName = document.getElementById(`editFirstName-${identifier}`).value.trim();
+  let newLastName = document.getElementById(`editLastName-${identifier}`).value.trim();
+  let newEmail = document.getElementById(`editEmail-${identifier}`).value.trim();
+  let newPhone = document.getElementById(`editPhone-${identifier}`).value.trim();
+  let result = document.getElementById(`editResult-${identifier}`);
+
+
+  let url = urlBase + "?contacts=update&id=" + encodeURIComponent(identifier);
+  let xhr = new XMLHttpRequest();
+  let jsonPayload = JSON.stringify({
+    firstName: newFirstName,
+    lastName: newLastName,
+    email: newEmail,
+    phone: newPhone
+  });
+
+  xhr.open("PUT", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.setRequestHeader("Authorization", "Bearer " + userId)
+  xhr.setRequestHeader("X-User-Id", userId);
+
+  try
+  {
+    xhr.onreadystatechange = function()
+    {
+      if(this.readyState === 4)
+      {
+        if(this.status === 200)
+        {
+          let res = JSON.parse(xhr.response);
+          result.innerHTML = res.message;
+          searchContacts();
+        }
+        else
+        {
+          let res = JSON.parse(xhr.response);
+          result.innerHTML = res.error;
+        }
+      }
+    };
+    xhr.send(jsonPayload);
+    }
+  catch(err)
+  {
+    result.innerHTML = "Error updating contact"
+  }
 }
