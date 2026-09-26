@@ -584,6 +584,82 @@ if (
     ], 200);
 }
 
+// Update Contact
+if (
+    $_SERVER['REQUEST_METHOD'] === 'PUT' &&
+    isset($_GET['contacts']) &&
+    $_GET['contacts'] === 'update'
+) {
+    $pdo = getDB();
+
+    // A user can update only their own contacts
+    $user = requireAuth($pdo);
+
+    $contactID = (int)($_GET['id'] ?? 0);
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $firstName = trim($data['firstName'] ?? '');
+    $lastName = trim($data['lastName'] ?? '');
+    $email = trim($data['email'] ?? '');
+    $phone = trim($data['phone'] ?? '');
+
+    if (
+        $contactID <= 0 ||
+        $firstName === '' ||
+        $lastName === '' ||
+        $email === '' ||
+        $phone === ''
+    ) {
+        jsonResponse([
+            "error" => "Contact ID and all fields are required"
+        ], 400);
+    }
+
+    $stmt = $pdo->prepare(
+        "SELECT ID
+         FROM Contacts
+         WHERE ID = ?
+           AND UserID = ?"
+    );
+
+    $stmt->execute([
+        $contactID,
+        (int)$user['ID']
+    ]);
+
+    if (!$stmt->fetch()) {
+        jsonResponse([
+            "error" => "Contact not found"
+        ], 404);
+    }
+
+    $stmt = $pdo->prepare(
+        "UPDATE Contacts
+         SET FirstName = ?,
+             LastName = ?,
+             Email = ?,
+             Phone = ?
+         WHERE ID = ?
+           AND UserID = ?"
+    );
+
+    $stmt->execute([
+        $firstName,
+        $lastName,
+        $email,
+        $phone,
+        $contactID,
+        (int)$user['ID']
+    ]);
+
+    jsonResponse([
+        "message" => "Contact updated successfully",
+        "id" => $contactID,
+        "error" => ""
+    ], 200);
+}
+
 jsonResponse([
     "error" => "Route not found"
 ], 404);
