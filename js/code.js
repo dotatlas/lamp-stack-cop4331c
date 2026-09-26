@@ -145,6 +145,8 @@ function doLogout()
 function searchAccount()
 {
   let resultSpan = document.getElementById("searchAccountResult");
+  let srchInput = document.getElementById("searchContacts");
+  let srch = srchInput ? srchInput.value.trim() : "";
   resultSpan.innerHTML = "";
 
   let url = urlBase + "?admin=users"
