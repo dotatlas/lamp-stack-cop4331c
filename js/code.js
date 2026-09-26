@@ -161,19 +161,6 @@ function searchAccount()
         
         let people = jsonObject.users || [];
 
-        if (people.length === 0 && Array.isArray(jsonObject.results) && jsonObject.results.length > 0) {
-          people = jsonObject.results.map(name => ({  
-            ID: null, 
-            FirstName: "",  
-            LastName: "", 
-            Login: name, 
-            Role: "", 
-            Enabled: null, 
-            DateCreated: "",
-            DateUpdated: ""
-          }));
-        }
-
         if (people.length === 0 || jsonObject.error === "No Records Found") {
           if (targetP) targetP.innerHTML = `<div class="text-secondary-contrast small italic py-2"><i class="bi bi-info-circle me-1"></i> No matching acounts found.</div>`;
           return;
@@ -184,9 +171,9 @@ function searchAccount()
         {
           let p = people[i];
           let contacts = p.contacts || [];
-          let accountName = typeof p === 'string' ? p : p.Login
+          let accountName = p.Login
           let contactsMarkup = "";
-          let accountId = (typeof p === 'object' && p.ID) ? p.ID: null 
+          let accountId = p.id
 
           //Make the contact list into a html string list
           if(contacts.length > 0)
@@ -201,7 +188,13 @@ function searchAccount()
           <div>
             <div>
               <span class="me-2">${accountName}</span>
-              <button type="button" class="btn-close btn-close-white" style="font-size: 0.65rem;" onclick="disableAccount(${accountId ? accountId : `'${accountName.replace(/'/g, "\\'")}'`});" title="Disable Account"></button>
+              <button type="button" 
+              class="btn btn-sm btn-outline-light" 
+                style="font-size: 0.65rem;" 
+                onclick="toggleAccount(${accountId ? accountId : `'${accountName.replace(/'/g, "\\'")}'`}, ${p.Enabled});" 
+                title="${p.Enabled ? 'Disable Account' : 'Enable Account'}">
+                ${p.Enabled ? 'Disable' : 'Enable'}
+              </button>
             </div>
             <details class="small">
               <summary class="text-primary role-button" style="cursor: pointer; user-select: none;">
@@ -217,6 +210,10 @@ function searchAccount()
         {
           targetP.innerHTML = accountList;
         }
+      }
+      else{
+        let res = JSON.parse(xhr.responseText);
+        resultSpan.innerHTML = res.error;
       }
     };
     xhr.send();
@@ -284,8 +281,6 @@ function searchContacts()
   } catch (err) {
     resultSpan.innerHTML = err.message;
   }
-
-
 }
 
 //Function used by register.html page to make user account or by admin.html to make new admin account
@@ -335,8 +330,23 @@ function addAccount(redirect)
     password: password
   })
 
+  let url = "";
+  const page = window.location.pathname.split('/').pop();
 
-  let url = urlBase + '?register='+ encodeURIComponent('register');
+  if(page === 'register.html')
+  {
+    url = urlBase + '?register='+ encodeURIComponent('register');
+  }
+  else if(page === 'admin.html')
+  {
+    url = urlBase + '?admin='+ encodeURIComponent('create');
+  }
+  
+  if(url === "")
+  {
+    accountResult.innerHTML = "error";
+    return;
+  }
 
   let xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
@@ -374,7 +384,7 @@ function addAccount(redirect)
         }
       }
     };
-    xhr.send(jsonPayload)
+    xhr.send(jsonPayload);
   }
   catch(err)
   {
@@ -385,24 +395,178 @@ function addAccount(redirect)
 //User function to add a new contact to their account
 function addContact()
 {
+  newContactFirstName = document.getElementById("firstName");
+  newContactLastName = document.getElementById("lastName");
+  newContactPhone = document.getElementById("phone");
+  newContactEmail = document.getElementById("email");
+  newContactFeedback = document.getElementById("contactAddResult");
 
+  if(!newContactFirstName || !newContactLastName || !newContactPhone || !newContactEmail)
+  {
+    newContactFeedback.innerHTML = "You cannot leave a field blank"
+  }
+
+  let jsonPayload = JSON.stringify({
+    firstName: newContactFirstName,
+    lastName: newContactLastName,
+    phone: newContactPhone,
+    mail: newContactEmail
+});
+
+let url = urlBase + '?contacts=add';
+let xhr = new XMLHttpRequest();
+xhr.open("POST", url, true);
+xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  try 
+  {
+    xhr.onreadystatechange = function()
+    {
+      if (this.readyState === 4)
+      {
+        if(this.status === 200)
+        {
+          newContactFeedback = "New Contact Added";
+          newContactFirstName.value = "";
+          newContactLastName.value = "";
+          newContactEmail.value = "";
+          newContactPhone.value = "";
+          searchContacts();
+        }
+        else
+        {
+          try
+          {
+            let res = JSON.parse(this.responseText);
+            newContactFeedback.innerHTML = res || "Failed to add contact"
+          }
+          catch(e)
+          {
+            newContactFeedback.innerHTML = "Error Adding Contact"
+          }
+        }
+      }
+    };
+    xhr.send(jsonPayload);
+  }
+  catch(err)
+  {
+    newContactFeedback.innerHTML = err.message;
+  }
 }
 
-//User function that 
-function deleteContact()
+//User function that deletes the selected Contact
+function deleteContact(identifier)
 {
+  if(!identifier && !identifier !== 0)
+  {
+    return;
+  }
+
+
 
 }
 
 
 //Function used by admin to disable an account
-function disableAccount(identifer)
+function toggleAccount(identifer, isEnabled)
 {
+  let accountStatusResult = document.getElementById("statusResult");
 
+  if (!identifer && identifer !== 0) 
+  {
+    return;
+  }
+
+  let url = urlBase + "?admin=status&id=" + encodeURIComponent(identifer);
+
+  let jsonPayload = JSON.stringify({
+    enabled: isEnabled
+  });
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("PUT", url, true);
+  xhr.setRequestHeader("Authorization", "Bearer " + userId)
+  xhr.setRequestHeader("X-User-Id", userId);
+
+  try
+  {
+    xhr.onreadystatechange = function() 
+    {
+      if(this.readyState === 4)
+      {
+        if(this.status === 200)
+        {
+          res = JSON.parse(xhr.responseText);
+          accountStatusResult.innerHTML = res.message;
+          isEnabled = res.enabled;
+        }
+        else
+        {
+          res = JSON.parse(xhr.responseText);
+          accountStatusResult.innerHTML = res;
+        }
+      }
+    };
+    xhr.send(jsonPayload);
+  }
+  catch
+  {
+    accountStatusResult.innerHTML = "Error in toggling account"
+  }
 }
 
 //Admin function to change another account's password
-function updatePassword()
+function updatePassword(identifer)
 {
+  newPassword = document.getElementById("newPasswordInput");
+  passwordResult = document.getElementById("passwordResult");
 
+
+  if (!identifer && identifer !== 0) 
+  {
+    return;
+  }
+
+  let url = urlBase + "?admin=password&id=" + encodeURIComponent(identifer);
+
+  let jsonPayload = JSON.stringify({
+    password: newPassword
+  });
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("PUT", url, true);
+  xhr.setRequestHeader("Authorization", "Bearer " + userId)
+  xhr.setRequestHeader("X-User-Id", userId);
+
+  try
+  {
+    xhr.onreadystatechange = function()
+    {
+      if(this.readyState === 4)
+      {
+        if(this.status === 200)
+        {
+          passwordResult.innerHTML = "Password successfully";
+        }
+        else{
+          passwordResult.innerHTML = "Login failed";
+        }
+      }
+      else
+      {
+        passwordResult.innerHTML = ""
+      }
+    };
+    xhr.send(jsonPayload);
+  }
+  catch(err)
+  {
+    passwordResult.innerHTML = err.message;
+  }
+
+}
+
+function updateContact()
+{
+  
 }
