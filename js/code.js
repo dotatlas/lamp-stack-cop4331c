@@ -273,7 +273,7 @@ function searchContacts()
           let contactId = c.id;
 
           contactList += `<span class="badge rounded-pill bg-dark-subtle text-body border border-secondary px-3 py-2 fs-6 shadow-sm d-inline-flex align-items-center me-2 mb-2">
-            <span class="d-inline-block rounded-circle me-2 border" style="width: 14px; height: 14px; background-color: ${c.FirstName} {contactName};"></span>
+            <span class="d-inline-block rounded-circle me-2 border" style="width: 14px; height: 14px; background-color: ${c.FirstName} ${contactName};"></span>
             <span class="me-2">${contactName}</span>
             <button type="button" class="btn-close btn-close-white" style="font-size: 0.65rem;" onclick="deleteContact(${contactId ? contactId : `'${contactName.replace(/'/g, "\\'")}'`});" title="Delete Contact"></button>
           </span>`;
