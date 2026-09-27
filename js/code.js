@@ -94,7 +94,6 @@ function saveCookie()
 
 function readCookie()
 {
-  return;
   userId = -1; 
   let data = document.cookie;
   let splits = data.split(";");
