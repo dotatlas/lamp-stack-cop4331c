@@ -29,14 +29,14 @@
                 <form id="loginForm" onsubmit="event.preventDefault(); doLogin();" class="needs-validation">
                     <!--UserName Section-->
                     <div class="mb-3">
-                        <label for="username">Username</label>
-                        <input id ="logInUsername" type="text" class="form-control" name="username" id="logInUsername" required autocomplete="on" placeholder="Username">
+                        <label for="username" class="form-label">Username</label>
+                        <input id ="logInUsername" type="text" class="form-control" name="username" id="logInUsername" required autocomplete="on">
                     </div>
 
                     <!--Password Section-->
                     <div class="mb-3">
-                        <label for="password">Password</label>
-                        <input id = "logInPassword" type="password" class="form-control" name="password" required placeholder="Password">
+                        <label for="password" class="form-label">Password</label>
+                        <input id = "logInPassword" type="password" class="form-control" name="password" required>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 mt-2">Submit</button>
@@ -46,9 +46,6 @@
                 </form>                
 
                 <hr class="my-4">
-                <p class="text-center text-muted mb-0">
-                    Can't log in?
-                </p>
                 <p class="text-center text-muted mb-0">
                     Don't have an account? <a href="register.html">Sign up</a>
                 </p>
