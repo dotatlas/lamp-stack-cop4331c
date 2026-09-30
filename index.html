@@ -19,23 +19,24 @@
     </head>
     
     <body>
+	<main>
         <div class="container d-flex align-items-center justify-content-center min-vh-100">
             <div class="card shadow-sm p-4" style="max-width: 450px; width: 100%;">
                 <h2 class="text-center mb-4" id="title">Contact Manager</h2>
-                <h5 class="text-center text-muted mb-4">Log In</h5>
+                <h3 class="text-center text-muted mb-4">Log In</h5>
 
                 <!--Log in section-->
                 
                 <form id="loginForm" onsubmit="event.preventDefault(); doLogin();" class="needs-validation">
                     <!--UserName Section-->
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input id ="logInUsername" type="text" class="form-control" name="username" id="logInUsername" required autocomplete="on">
+                        <label for="logInUsername" class="form-label">Username</label>
+                        <input id ="logInUsername" type="text" class="form-control" name="username" required autocomplete="on">
                     </div>
 
                     <!--Password Section-->
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
+                        <label for="logInPassword" class="form-label">Password</label>
                         <input id = "logInPassword" type="password" class="form-control" name="password" required>
                     </div>
 
@@ -52,6 +53,7 @@
             </div>
 
         </div>
+	</main>
     </body>
 
 </html>

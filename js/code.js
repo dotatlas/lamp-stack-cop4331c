@@ -124,7 +124,8 @@ function readCookie()
    } else {
      let userNameEl = document.getElementById("userName");
      if (userNameEl) {
-       userNameEl.innerHTML = `<i class="bi bi-person-circle me-1 text-primary"></i> <span>Logged in as <strong class="text-primary">${firstName} ${lastName}</strong></span>`;
+       userNameEl.innerHTML = `<i class="bi bi-person-circle me-1" style="color: #000000 !important;"></i> 
+	<span>Logged in as <strong style="color: #000000 !important;"   >${firstName} ${lastName}</strong></span>`;
      }
   }
 
@@ -311,6 +312,7 @@ function searchContacts()
           <div id="editForm-${contactId}" class="card card-body mt-2 shadow-sm d-none" style="max-width: 320px;">
             <h6 class="card-title mb-2"> Edit Contact </h6>
             <div class ="mb-2">
+		
               <input type="text" id="editFirstName-${contactId}" class="form-control form-control-sm" placeholder="First Name" value="${c.FirstName}">
             </div>
             <div class ="mb-2">
@@ -615,7 +617,7 @@ function toggleAccount(identifier, isEnabled)
         else
         {
           res = JSON.parse(xhr.responseText);
-          accountStatusResult.innerHTML = res;
+          accountStatusResult.innerHTML = res.error;
         }
       }
     };
